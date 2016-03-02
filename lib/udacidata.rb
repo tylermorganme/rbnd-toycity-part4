@@ -41,4 +41,16 @@ class Udacidata
       return result
     end
   end
+
+  def self.last(n=1)
+    if n == 1
+      return self.new(CSV.read(@@data_path, headers:true, :header_converters => :symbol)[-1].to_hash)
+    else
+      result = []
+      CSV.read(@@data_path, headers:true, :header_converters => :symbol).values_at(*(-n..-1).to_a).each do |row|
+        result << self.new(row.to_hash)
+      end
+      return result
+    end
+  end
 end

@@ -53,4 +53,24 @@ class Udacidata
       return result
     end
   end
+
+  def self.find(index)
+    object = CSV.read(@@data_path, headers:true, :header_converters => :symbol).find do |row|
+      row.fetch(:id).to_i === index
+    end
+    self.new(object.to_hash)
+  end
+
+  def self.destroy(index)
+    n = 0
+    object = self.find(index)
+    data = CSV.table(@@data_path)
+    data.delete_if do |row|
+      row[:id] == index
+    end
+    File.open(@@data_path, 'w') do |f|
+      f.write(data.to_csv)
+    end
+    object
+  end
 end

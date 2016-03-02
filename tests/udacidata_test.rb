@@ -93,28 +93,28 @@ class TestUdacidata < MiniTest::Test
     array_of_products = Product.last(3)
     assert_equal(3, array_of_products.size)
   end
-  #
-  # def test_find_method_returns_correct_product
-  #   product = Product.find(5)
-  #   assert_equal(5, product.id)
-  # end
-  #
-  # def test_find_method_returns_product_object
-  #   product = Product.find(5)
-  #   assert_instance_of(Product, product)
-  # end
-  #
-  # def test_destroy_method_removes_product_from_database
-  #   before = CSV.read(@data_path).length
-  #   Product.destroy(2)
-  #   after = CSV.read(@data_path).length
-  #   assert_equal(after, before - 1)
-  # end
-  #
-  # def test_destroy_method_returns_deleted_product
-  #   product = Product.destroy(7)
-  #   assert_equal(7, product.id)
-  # end
+
+  def test_find_method_returns_correct_product
+    product = Product.find(5)
+    assert_equal(5, product.id)
+  end
+
+  def test_find_method_returns_product_object
+    product = Product.find(5)
+    assert_instance_of(Product, product)
+  end
+
+  def test_destroy_method_removes_product_from_database
+    before = CSV.read(@data_path).length
+    Product.destroy(2)
+    after = CSV.read(@data_path).length
+    assert_equal(after, before - 1)
+  end
+
+  def test_destroy_method_returns_deleted_product
+    product = Product.destroy(7)
+    assert_equal(7, product.id)
+  end
   #
   # def test_find_by_brand_method_returns_first_product_with_given_brand
   #   Product.create(brand: "OritToys", name: "Sticky Notes", price: 34.00)

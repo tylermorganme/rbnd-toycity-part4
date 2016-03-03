@@ -77,7 +77,7 @@ class Udacidata
 
   def self.where(options={})
     rows = CSV.read(@@data_path, headers:true, :header_converters => :symbol).find_all do |row|
-      if options.keys[0] == "name"
+      if options.keys[0] == :name
         row.fetch(:product) == options.values[0]
       else
         row.fetch(:brand) == options.values[0]

@@ -90,6 +90,22 @@ class Udacidata
     results
   end
 
+  def update(options={})
+    Product.destroy(self.id)
+    hash = {}
+    x = self.send("id")
+    keys = self.instance_variables.map {|key| key[1..-1].to_sym}
+    keys.each do |key, value|
+      key == :name if key == :product
+      if options.has_key? key
+        hash[key] = options[key]
+      else
+        hash[key] = self.send(key.to_s)
+      end
+    end
+    Product.create(hash)
+  end
+
   def self.method_missing(method_name, *arguments)
     attribute = method_name.to_s[8..-1]
     if method_name.to_s.start_with? "find_by" # TODO: Need to add more checks

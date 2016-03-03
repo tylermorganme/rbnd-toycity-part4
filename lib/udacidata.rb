@@ -75,6 +75,21 @@ class Udacidata
     object
   end
 
+  def self.where(options={})
+    rows = CSV.read(@@data_path, headers:true, :header_converters => :symbol).find_all do |row|
+      if options.keys[0] == "name"
+        row.fetch(:product) == options.values[0]
+      else
+        row.fetch(:brand) == options.values[0]
+      end
+    end
+    results = []
+    rows.each do |row|
+      results << product_row_to_object(row)
+    end
+    results
+  end
+
   def self.method_missing(method_name, *arguments)
     attribute = method_name.to_s[8..-1]
     if method_name.to_s.start_with? "find_by" # TODO: Need to add more checks
@@ -90,4 +105,5 @@ class Udacidata
     hash[:name] = hash.delete(:product)
     self.new(hash)
   end
+
 end

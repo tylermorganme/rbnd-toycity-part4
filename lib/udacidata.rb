@@ -56,23 +56,39 @@ class Udacidata
   end
 
   def self.find(id)
-    object = CSV.read(@@data_path, headers:true, :header_converters => :symbol).find do |row|
-      row.fetch(:id).to_i === id
+    begin
+      object = CSV.read(@@data_path, headers:true, :header_converters => :symbol).find do |row|
+        row.fetch(:id).to_i === id
+      end
+      raise ProductNotFoundError, "Product with id = #{id} not found" if !object
+      return product_row_to_object(object)
+    rescue Exception => e
+      puts e.message
+      puts e.backtrace.inspect
     end
-    product_row_to_object(object)
   end
 
   def self.destroy(id)
-    n = 0
-    object = self.find(id)
-    data = CSV.table(@@data_path)
-    data.delete_if do |row|
-      row[:id] == id
+    begin
+      n = 0
+      object = self.find(id)
+      data = CSV.table(@@data_path)
+      found = false
+      data.delete_if do |row|
+        if row[:id] == id
+          found = true
+        end
+        row[:id] == id
+      end
+      raise ProductNotFoundError, "Product with id = #{id} not found" if !found
+      File.open(@@data_path, 'w') do |f|
+        f.write(data.to_csv)
+      end
+      return object
+    rescue Exception => e
+      puts e.message
+      puts e.backtrace.inspect
     end
-    File.open(@@data_path, 'w') do |f|
-      f.write(data.to_csv)
-    end
-    object
   end
 
   def self.where(options={})

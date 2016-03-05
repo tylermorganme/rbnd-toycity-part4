@@ -9,6 +9,7 @@ class Udacidata
 
     # create the object
     object = self.new(attributes)
+    attributes = Hash[object.instance_variables.map { |var| [var, object.instance_variable_get(var)] } ]
     found_object = self.find(object.id)
 
     # If the object's data is already in the database
@@ -18,7 +19,7 @@ class Udacidata
     else # If the object's data is not in the database
       # save the data in the database
       CSV.open(@@data_path, "ab") do |csv|
-        csv << ([object.id] + attributes.values)
+        csv << (attributes.values)
       end
       # return the object
       return object
@@ -111,7 +112,6 @@ class Udacidata
   def update(options={})
     Product.destroy(self.id)
     hash = {}
-    x = self.send("id")
     keys = self.instance_variables.map {|key| key[1..-1].to_sym}
     keys.each do |key, value|
       key == :name if key == :product
@@ -126,7 +126,7 @@ class Udacidata
 
   def self.method_missing(method_name, *arguments)
     attribute = method_name.to_s[8..-1]
-    if method_name.to_s.start_with? "find_by" # TODO: Need to add more checks
+    if method_name.to_s.start_with? "find_by"
       Module::create_finder_methods(method_name.to_s[8..-1])
       self.send(method_name, *arguments)
     else
